@@ -162,7 +162,7 @@ const Dashboard = () => {
         {/* Key Metrics */}
         <div className="glass-card widget-metric">
           <div className="card-header">
-            <span className="card-title">Solar Power<HelpIcon text="태양광 패널에서 현재 생산되는 전력량입니다. 전압과 전류를 곱한 값입니다." multiline /></span>
+            <span className="card-title">Solar Power<HelpIcon text="현재 태양광 패널 발전량 (전압 × 전류)" /></span>
           </div>
           <div className="metric-value" style={{ color: 'var(--primary-color)' }}>
             1.2<span className="metric-unit"> W</span>
@@ -172,7 +172,7 @@ const Dashboard = () => {
 
         <div className="glass-card widget-metric">
           <div className="card-header">
-            <span className="card-title">Battery Status<HelpIcon text="배터리의 현재 충전 상태(SOC)와 예상 사용 가능 시간입니다." multiline /></span>
+            <span className="card-title">Battery Status<HelpIcon text="배터리 충전량과 예상 사용시간" /></span>
             <Link to="/battery" style={{ color: 'var(--primary-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
               Details <MdArrowForward size={14} />
             </Link>
@@ -188,7 +188,7 @@ const Dashboard = () => {
 
         <div className="glass-card widget-metric">
           <div className="card-header">
-            <span className="card-title">Load Power<HelpIcon text="현재 연결된 부하(전등, 기기 등)가 소비하는 전력량입니다." multiline /></span>
+            <span className="card-title">Load Power<HelpIcon text="연결된 기기의 소비 전력" /></span>
           </div>
           <div className="metric-value" style={{ color: 'var(--accent-color)' }}>
             0.3<span className="metric-unit"> W</span>
@@ -198,7 +198,7 @@ const Dashboard = () => {
 
         <div className="glass-card widget-metric">
           <div className="card-header">
-            <span className="card-title">Efficiency<HelpIcon text="태양광 시스템의 전체 효율입니다. 발전량 대비 실제 사용 가능한 에너지 비율입니다." multiline /></span>
+            <span className="card-title">Efficiency<HelpIcon text="시스템 전체 에너지 효율" /></span>
           </div>
           <div className="metric-value" style={{ color: '#2196F3' }}>
             92<span className="metric-unit"> %</span>
@@ -222,7 +222,7 @@ const Dashboard = () => {
         {/* Eco Impact */}
         <div className="glass-card widget-eco">
           <div className="card-header">
-            <span className="card-title">Eco Impact<HelpIcon text="태양광 발전으로 절감한 CO2 배출량, 절약 금액, 에너지 자립률 등 환경 효과입니다." multiline /></span>
+            <span className="card-title">Eco Impact<HelpIcon text="CO2 절감, 절약금액, 에너지 자립률" /></span>
             <Link to="/eco" style={{ color: 'var(--primary-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
               Details <MdArrowForward size={14} />
             </Link>
@@ -274,7 +274,7 @@ const Dashboard = () => {
         {/* Logs */}
         <div className="glass-card widget-logs">
           <div className="card-header">
-            <span className="card-title">System Logs<HelpIcon text="시스템의 주요 이벤트와 상태 변화를 시간순으로 기록한 로그입니다." multiline /></span>
+            <span className="card-title">System Logs<HelpIcon text="시스템 이벤트 기록" /></span>
             <Link to="/logs" style={{ color: 'var(--primary-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
               View All <MdArrowForward size={14} />
             </Link>

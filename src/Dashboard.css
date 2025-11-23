@@ -434,7 +434,8 @@ header {
 
 /* Multi-line tooltip */
 .tooltip-text.multiline {
-    white-space: normal;
-    max-width: 400px;
+    max-width: 250px;
+    white-space: pre-wrap;
     text-align: left;
+    word-break: keep-all;
 }
