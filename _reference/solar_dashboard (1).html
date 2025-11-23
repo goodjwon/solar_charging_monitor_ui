@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Charging Monitor</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #00bcd4;
+            --accent-color: #ff4081;
+            --bg-color: #102027;
+            --card-bg: #263238;
+            --text-primary: #ffffff;
+            --text-secondary: #b0bec5;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Roboto", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Fullscreen Mode */
+        body.fullscreen-mode {
+            overflow: hidden;
+        }
+        body.fullscreen-mode header {
+            display: none;
+        }
+        body.fullscreen-mode .dashboard-container {
+            padding: 20px;
+            height: 100vh;
+            max-width: 100%;
+            overflow-y: auto; /* Allow scrolling in fullscreen if content overflows */
+        }
+
+        /* Header Styling */
+        header {
+            background-color: #000000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            width: 100%;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-controls button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.3s;
+            font-size: 14px;
+        }
+        .header-controls button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Layout */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* Material Card Component */
+        .glass-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .card-title {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Widget Specifics */
+        .widget-energy-flow {
+            grid-column: 1 / -1;
+            height: 280px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Flow Animation */
+        .flow-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        .flow-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            z-index: 2;
+        }
+        .node-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            border: 2px solid transparent;
+            color: var(--text-secondary);
+        }
+        .node-icon.solar { color: #ffeb3b; }
+        .node-icon.battery { color: var(--success-color); }
+        .node-icon.load { color: var(--accent-color); }
+        
+        .flow-line {
+            position: absolute;
+            top: 50%;
+            left: 15%;
+            right: 15%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+        .flow-particle {
+            position: absolute;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 10px var(--primary-color);
+            animation: flowMove 2s linear infinite;
+        }
+        @keyframes flowMove {
+            0% { left: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        /* Key Metrics */
+        .widget-metric {
+            grid-column: span 3;
+        }
+        @media (max-width: 1024px) { .widget-metric { grid-column: span 6; } }
+        @media (max-width: 768px) { .widget-metric { grid-column: span 12; } }
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--text-primary);
+        }
+        .metric-unit {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+        .metric-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        /* Battery Widget */
+        .battery-visual {
+            width: 100%;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .battery-level {
+            height: 100%;
+            background: var(--success-color);
+            width: 75%;
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        /* Charts */
+        .widget-chart {
+            grid-column: span 8;
+            height: 350px;
+        }
+        .widget-eco {
+            grid-column: span 4;
+            height: 350px;
+        }
+        .widget-small-chart {
+            grid-column: span 4;
+            height: 250px;
+        }
+        @media (max-width: 1024px) { 
+            .widget-chart, .widget-eco, .widget-small-chart { grid-column: span 12; } 
+        }
+
+        /* Logs */
+        .widget-logs {
+            grid-column: span 12;
+            height: 250px;
+            overflow-y: auto;
+        }
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 14px;
+        }
+        .log-time { color: var(--text-secondary); }
+        .log-msg { color: var(--text-primary); }
+        .log-type.info { color: #2196F3; }
+        .log-type.warn { color: #FFC107; }
+        .log-type.error { color: #F44336; }
+
+        /* Eco Widget */
+        .eco-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            height: 100%;
+        }
+        .eco-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+        }
+        .eco-icon { font-size: 32px; margin-bottom: 10px; }
+        .eco-val { font-size: 20px; font-weight: 700; color: var(--primary-color); }
+        .eco-label { font-size: 12px; color: var(--text-secondary); }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="header-title">
+                <h1><span class="material-icons">solar_power</span> SOLAR MONITOR</h1>
+            </div>
+            <div class="header-controls">
+                <span id="clock" style="font-family: monospace; color: var(--text-secondary); font-size: 16px;">12:00:00</span>
+                <button onclick="toggleFullscreen()">
+                    <span class="material-icons">fullscreen</span> Fullscreen
+                </button>
+                <button>
+                    <span class="material-icons">settings</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <!-- A. Energy Flow -->
+        <div class="glass-card widget-energy-flow">
+            <div class="card-header">
+                <span class="card-title">Real-time Energy Flow</span>
+                <span class="material-icons" style="color:var(--text-secondary)">autorenew</span>
+            </div>
+            <div class="flow-container">
+                <div class="flow-line">
+                    <div class="flow-particle" style="animation-duration: 1.5s;"></div>
+                    <div class="flow-particle" style="animation-duration: 1.5s; animation-delay: 0.75s;"></div>
+                </div>
+                
+                <div class="flow-node">
+                    <div class="node-icon solar"><span class="material-icons">wb_sunny</span></div>
+                    <div style="text-align: center;">
+                        <div style="color: #ffeb3b; font-weight: bold;">Generation</div>
+                        <div style="color: var(--text-secondary);">1.2 W</div>
+                    </div>
+                </div>
+                <div class="flow-node">
+                    <div class="node-icon battery"><span class="material-icons">battery_charging_full</span></div>
+                    <div style="text-align: center;">
+                        <div style="color: var(--success-color); font-weight: bold;">Storage</div>
+                        <div style="color: var(--text-secondary);">75 %</div>
+                    </div>
+                </div>
+                <div class="flow-node">
+                    <div class="node-icon load"><span class="material-icons">lightbulb</span></div>
+                    <div style="text-align: center;">
+                        <div style="color: var(--accent-color); font-weight: bold;">Consumption</div>
+                        <div style="color: var(--text-secondary);">0.3 W</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- B. Key Metrics -->
+        <div class="glass-card widget-metric">
+            <div class="card-header"><span class="card-title">Solar Power</span></div>
+            <div class="metric-value" style="color: var(--primary-color);">1.2<span class="metric-unit"> W</span></div>
+            <div class="metric-sub">Voltage: 12.4 V | Current: 0.1 A</div>
+        </div>
+
+        <div class="glass-card widget-metric">
+            <div class="card-header"><span class="card-title">Battery Status</span></div>
+            <div class="battery-visual">
+                <div class="battery-level"></div>
+            </div>
+            <div class="metric-value" style="color: var(--success-color);">75<span class="metric-unit"> %</span></div>
+            <div class="metric-sub">Est. Time Left: 3h 20m</div>
+        </div>
+
+        <div class="glass-card widget-metric">
+            <div class="card-header"><span class="card-title">Load Power</span></div>
+            <div class="metric-value" style="color: var(--accent-color);">0.3<span class="metric-unit"> W</span></div>
+            <div class="metric-sub">Status: Active</div>
+        </div>
+
+        <div class="glass-card widget-metric">
+            <div class="card-header"><span class="card-title">Efficiency</span></div>
+            <div class="metric-value" style="color: #2196F3;">92<span class="metric-unit"> %</span></div>
+            <div class="metric-sub">System Health: Good</div>
+        </div>
+
+        <!-- C. Charts -->
+        <div class="glass-card widget-chart">
+            <div class="card-header">
+                <span class="card-title">Power Generation History (24h)</span>
+            </div>
+            <div style="height: 100%; width: 100%;">
+                <canvas id="historyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- D. Eco & Savings -->
+        <div class="glass-card widget-eco">
+            <div class="card-header"><span class="card-title">Eco Impact</span></div>
+            <div class="eco-grid">
+                <div class="eco-item">
+                    <div class="eco-icon">🌲</div>
+                    <div class="eco-val">0.5</div>
+                    <div class="eco-label">Trees Planted</div>
+                </div>
+                <div class="eco-item">
+                    <div class="eco-icon">☁️</div>
+                    <div class="eco-val">4.2 kg</div>
+                    <div class="eco-label">CO2 Saved</div>
+                </div>
+                <div class="eco-item">
+                    <div class="eco-icon">💰</div>
+                    <div class="eco-val">₩ 350</div>
+                    <div class="eco-label">Money Saved</div>
+                </div>
+                <div class="eco-item">
+                    <div class="eco-icon">🔋</div>
+                    <div class="eco-val">85 %</div>
+                    <div class="eco-label">Self-Sufficiency</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- E. Additional Charts (Restored) -->
+        <div class="glass-card widget-small-chart">
+            <div class="card-header"><span class="card-title">Monthly Energy</span></div>
+            <div style="height: 100%; width: 100%;">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+        <div class="glass-card widget-small-chart">
+            <div class="card-header"><span class="card-title">Yearly Energy</span></div>
+            <div style="height: 100%; width: 100%;">
+                <canvas id="yearlyChart"></canvas>
+            </div>
+        </div>
+        <div class="glass-card widget-small-chart">
+            <div class="card-header"><span class="card-title">Total Cumulative</span></div>
+            <div style="height: 100%; width: 100%;">
+                <canvas id="cumulativeChart"></canvas>
+            </div>
+        </div>
+
+        <!-- F. Logs -->
+        <div class="glass-card widget-logs">
+            <div class="card-header"><span class="card-title">System Logs</span></div>
+            <div id="logList">
+                <div class="log-item">
+                    <span class="log-time">12:00:05</span>
+                    <span class="log-msg">Battery fully charged</span>
+                    <span class="log-type info">INFO</span>
+                </div>
+                <div class="log-item">
+                    <span class="log-time">11:45:22</span>
+                    <span class="log-msg">Solar panel voltage drop detected</span>
+                    <span class="log-type warn">WARN</span>
+                </div>
+                <div class="log-item">
+                    <span class="log-time">09:30:00</span>
+                    <span class="log-msg">System started</span>
+                    <span class="log-type info">INFO</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById("clock").innerText = now.toLocaleTimeString();
+        }, 1000);
+
+        // Fullscreen Toggle
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                document.body.classList.add("fullscreen-mode");
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    document.body.classList.remove("fullscreen-mode");
+                }
+            }
+        }
+
+        // Chart.js Setup
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "#b0bec5" } },
+                y: { grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "#b0bec5" } }
+            }
+        };
+
+        // 1. History Chart
+        const ctxHistory = document.getElementById("historyChart").getContext("2d");
+        const gradHistory = ctxHistory.createLinearGradient(0, 0, 0, 400);
+        gradHistory.addColorStop(0, "rgba(0, 188, 212, 0.5)");
+        gradHistory.addColorStop(1, "rgba(0, 188, 212, 0)");
+
+        new Chart(ctxHistory, {
+            type: "line",
+            data: {
+                labels: ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"],
+                datasets: [{
+                    label: "Generation (W)",
+                    data: [0, 0.5, 1.2, 2.5, 1.8, 0.2],
+                    borderColor: "#00bcd4",
+                    backgroundColor: gradHistory,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4
+                }]
+            },
+            options: commonOptions
+        });
+
+        // 2. Monthly Chart
+        new Chart(document.getElementById("monthlyChart").getContext("2d"), {
+            type: "bar",
+            data: {
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                datasets: [{
+                    data: [120, 150, 180, 220, 250, 280],
+                    backgroundColor: "#00bcd4",
+                    borderRadius: 4
+                }]
+            },
+            options: commonOptions
+        });
+
+        // 3. Yearly Chart
+        new Chart(document.getElementById("yearlyChart").getContext("2d"), {
+            type: "line",
+            data: {
+                labels: ["2021", "2022", "2023", "2024", "2025"],
+                datasets: [{
+                    data: [3200, 3500, 3800, 4100, 4000],
+                    borderColor: "#ff4081",
+                    backgroundColor: "rgba(255, 64, 129, 0.1)",
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: commonOptions
+        });
+
+        // 4. Cumulative Chart
+        new Chart(document.getElementById("cumulativeChart").getContext("2d"), {
+            type: "line",
+            data: {
+                labels: ["2021", "2022", "2023", "2024", "2025"],
+                datasets: [{
+                    data: [3200, 6700, 10500, 14600, 18600],
+                    borderColor: "#4caf50",
+                    backgroundColor: "rgba(76, 175, 80, 0.1)",
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: commonOptions
+        });
+    </script>
+</body>
+</html>
