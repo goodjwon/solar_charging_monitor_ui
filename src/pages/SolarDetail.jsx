@@ -140,15 +140,15 @@ const SolarDetail = () => {
         </div>
 
         {/* Peak Records */}
-        <div className="glass-card widget-small-chart">
+        <div className="glass-card" style={{ gridColumn: 'span 4', height: '350px' }}>
           <div className="card-header"><span className="card-title">Peak Records</span></div>
-          <div style={{ padding: '20px 0' }}>
-            <div style={{ marginBottom: '20px', paddingBottom: '20px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+          <div style={{ padding: '20px 0', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', height: 'calc(100% - 50px)' }}>
+            <div style={{ paddingBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
               <div style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px' }}>Today's Peak</div>
               <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#f1c40f' }}>1.5 W</div>
               <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>at 12:30 PM</div>
             </div>
-            <div style={{ marginBottom: '20px', paddingBottom: '20px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+            <div style={{ paddingBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
               <div style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '8px' }}>This Week</div>
               <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#ff9800' }}>2.2 W</div>
               <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>on Thursday</div>
