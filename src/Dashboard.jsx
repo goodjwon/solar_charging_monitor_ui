@@ -113,30 +113,37 @@ const Dashboard = () => {
             <MdAutorenew style={{ color: 'var(--text-secondary)' }} />
           </div>
           <div className="flow-container">
+            <div className="flow-node">
+              <div className="node-icon solar"><MdSolarPower /></div>
+              <div style={{ position: 'absolute', top: '70px', textAlign: 'center', width: '150px' }}>
+                <div style={{ fontWeight: 'bold', marginBottom: '4px', color: '#f1c40f' }}>Generation</div>
+                <div style={{ fontSize: '0.9rem', opacity: 0.8, color: 'var(--text-secondary)' }}>1.2 W</div>
+              </div>
+            </div>
+
             <div className="flow-line">
               <div className="flow-particle" style={{ animationDuration: '1.5s' }}></div>
               <div className="flow-particle" style={{ animationDuration: '1.5s', animationDelay: '0.75s' }}></div>
             </div>
 
             <div className="flow-node">
-              <div className="node-icon solar"><MdSolarPower /></div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ color: '#ffeb3b', fontWeight: 'bold' }}>Generation</div>
-                <div style={{ color: 'var(--text-secondary)' }}>1.2 W</div>
-              </div>
-            </div>
-            <div className="flow-node">
               <div className="node-icon battery"><MdBatteryChargingFull /></div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ color: 'var(--success-color)', fontWeight: 'bold' }}>Storage</div>
-                <div style={{ color: 'var(--text-secondary)' }}>75 %</div>
+              <div style={{ position: 'absolute', top: '70px', textAlign: 'center', width: '150px' }}>
+                <div style={{ fontWeight: 'bold', marginBottom: '4px', color: '#2ecc71' }}>Storage</div>
+                <div style={{ fontSize: '0.9rem', opacity: 0.8, color: 'var(--text-secondary)' }}>75 %</div>
               </div>
             </div>
+
+            <div className="flow-line">
+              <div className="flow-particle" style={{ animationDuration: '1.5s' }}></div>
+              <div className="flow-particle" style={{ animationDuration: '1.5s', animationDelay: '0.75s' }}></div>
+            </div>
+
             <div className="flow-node">
               <div className="node-icon load"><MdLightbulb /></div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ color: 'var(--accent-color)', fontWeight: 'bold' }}>Consumption</div>
-                <div style={{ color: 'var(--text-secondary)' }}>0.3 W</div>
+              <div style={{ position: 'absolute', top: '70px', textAlign: 'center', width: '150px' }}>
+                <div style={{ fontWeight: 'bold', marginBottom: '4px', color: '#e74c3c' }}>Consumption</div>
+                <div style={{ fontSize: '0.9rem', opacity: 0.8, color: 'var(--text-secondary)' }}>0.3 W</div>
               </div>
             </div>
           </div>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        /* 전체 컨테이너 */
+        .timeline-container {
+            display: flex;
+            align-items: center;
+            /* 핵심: 수직 중앙 정렬 (선이 아이콘 중간으로 옴) */
+            justify-content: space-between;
+            width: 100%;
+            background-color: #2c3e50;
+            padding: 50px 20px;
+            box-sizing: border-box;
+        }
+
+        /* 각 단계 (아이콘 + 텍스트) */
+        .step {
+            position: relative;
+            /* 텍스트 위치를 잡기 위해 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+        }
+
+        /* 원형 아이콘 */
+        .circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #1abc9c;
+            /* 예시 색상 (Storage) */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* 연결 선 (Line) */
+        .line {
+            height: 2px;
+            /* 선 두께 */
+            background-color: #7f8c8d;
+            /* 선 색상 */
+            flex-grow: 1;
+            /* 빈 공간을 선으로 채움 */
+            margin: 0 5px;
+            /* 핵심: 좌우 여백 5px (아이콘과 떨어짐) */
+            border-radius: 2px;
+            /* 선 끝을 살짝 둥글게 */
+        }
+
+        /* 하단 텍스트 (아이콘 중앙 정렬 유지하며 밑으로 뺌) */
+        .label-box {
+            position: absolute;
+            top: 70px;
+            /* 아이콘 바로 밑 */
+            text-align: center;
+            width: 150px;
+            /* 텍스트 줄바꿈 방지용 너비 확보 */
+            color: #ecf0f1;
+        }
+
+        .label-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #f1c40f;
+            /* Generation 색상 예시 */
+        }
+
+        .label-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* 각 아이콘 별 색상 (예시) */
+        .c-gen {
+            background-color: #34495e;
+            border: 2px solid #f1c40f;
+            color: #f1c40f;
+        }
+
+        .c-sto {
+            background-color: #34495e;
+            border: 2px solid #2ecc71;
+            color: #2ecc71;
+        }
+
+        .c-con {
+            background-color: #34495e;
+            border: 2px solid #e74c3c;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="timeline-container">
+
+        <div class="step">
+            <div class="circle c-gen">☀</div>
+            <div class="label-box">
+                <div class="label-title" style="color:#f1c40f">Generation</div>
+                <div class="label-desc">1.2 W</div>
+            </div>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="step">
+            <div class="circle c-sto">🔋</div>
+            <div class="label-box">
+                <div class="label-title" style="color:#2ecc71">Storage</div>
+                <div class="label-desc">75 %</div>
+            </div>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="step">
+            <div class="circle c-con">💡</div>
+            <div class="label-box">
+                <div class="label-title" style="color:#e74c3c">Consumption</div>
+                <div class="label-desc">0.3 W</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
