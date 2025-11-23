@@ -194,6 +194,9 @@ const Dashboard = () => {
         <div className="glass-card widget-chart">
           <div className="card-header">
             <span className="card-title">Power Generation History (24h)</span>
+            <Link to="/solar" style={{ color: 'var(--primary-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+              Details <MdArrowForward size={14} />
+            </Link>
           </div>
           <div style={{ height: '100%', width: '100%' }}>
             <Line data={historyData} options={commonChartOptions} />

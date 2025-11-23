@@ -3,6 +3,7 @@ import Dashboard from './Dashboard'
 import BatteryDetail from './pages/BatteryDetail'
 import EcoDetail from './pages/EcoDetail'
 import LogsDetail from './pages/LogsDetail'
+import SolarDetail from './pages/SolarDetail'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/battery" element={<BatteryDetail />} />
         <Route path="/eco" element={<EcoDetail />} />
         <Route path="/logs" element={<LogsDetail />} />
+        <Route path="/solar" element={<SolarDetail />} />
       </Routes>
     </BrowserRouter>
   )
