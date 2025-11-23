@@ -114,12 +114,16 @@ header {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
+    overflow: visible;
+    position: relative;
 }
 
 .card-title {
     font-size: 16px;
     color: var(--text-secondary);
     font-weight: 500;
+    display: flex;
+    align-items: center;
 }
 
 .widget-energy-flow {
