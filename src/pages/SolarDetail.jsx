@@ -202,18 +202,18 @@ const SolarDetail = () => {
         </div>
 
         {/* Generation Summary */}
-        <div className="glass-card widget-small-chart">
+        <div className="glass-card" style={{ gridColumn: 'span 4', height: '350px' }}>
           <div className="card-header"><span className="card-title">Generation Summary</span></div>
-          <div style={{ padding: '20px 0' }}>
-            <div style={{ marginBottom: '20px' }}>
+          <div style={{ padding: '20px 0', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', height: 'calc(100% - 50px)' }}>
+            <div>
               <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>Today</div>
               <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#f1c40f' }}>18 Wh</div>
             </div>
-            <div style={{ marginBottom: '20px' }}>
+            <div>
               <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>This Week</div>
               <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#ff9800' }}>122 Wh</div>
             </div>
-            <div style={{ marginBottom: '20px' }}>
+            <div>
               <div style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>This Month</div>
               <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#2ecc71' }}>520 Wh</div>
             </div>
