@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
-import { MdSolarPower, MdAutorenew, MdBatteryChargingFull, MdLightbulb, MdFullscreen, MdSettings } from 'react-icons/md';
+import { MdSolarPower, MdAutorenew, MdBatteryChargingFull, MdLightbulb, MdFullscreen, MdSettings, MdArrowForward } from 'react-icons/md';
 import './Dashboard.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler);
@@ -116,7 +117,7 @@ const Dashboard = () => {
               <div className="flow-particle" style={{ animationDuration: '1.5s' }}></div>
               <div className="flow-particle" style={{ animationDuration: '1.5s', animationDelay: '0.75s' }}></div>
             </div>
-            
+
             <div className="flow-node">
               <div className="node-icon solar"><MdSolarPower /></div>
               <div style={{ textAlign: 'center' }}>
@@ -151,7 +152,12 @@ const Dashboard = () => {
         </div>
 
         <div className="glass-card widget-metric">
-          <div className="card-header"><span className="card-title">Battery Status</span></div>
+          <div className="card-header">
+            <span className="card-title">Battery Status</span>
+            <Link to="/battery" style={{ color: 'var(--primary-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+              Details <MdArrowForward size={14} />
+            </Link>
+          </div>
           <div className="battery-visual">
             <div className="battery-level"></div>
           </div>
@@ -189,7 +195,12 @@ const Dashboard = () => {
 
         {/* Eco Impact */}
         <div className="glass-card widget-eco">
-          <div className="card-header"><span className="card-title">Eco Impact</span></div>
+          <div className="card-header">
+            <span className="card-title">Eco Impact</span>
+            <Link to="/eco" style={{ color: 'var(--primary-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+              Details <MdArrowForward size={14} />
+            </Link>
+          </div>
           <div className="eco-grid">
             <div className="eco-item">
               <div className="eco-icon">🌲</div>
@@ -236,7 +247,12 @@ const Dashboard = () => {
 
         {/* Logs */}
         <div className="glass-card widget-logs">
-          <div className="card-header"><span className="card-title">System Logs</span></div>
+          <div className="card-header">
+            <span className="card-title">System Logs</span>
+            <Link to="/logs" style={{ color: 'var(--primary-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+              View All <MdArrowForward size={14} />
+            </Link>
+          </div>
           <div>
             <div className="log-item">
               <span className="log-time">12:00:05</span>
