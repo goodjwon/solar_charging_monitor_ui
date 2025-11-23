@@ -209,7 +209,7 @@ const Dashboard = () => {
         {/* Charts */}
         <div className="glass-card widget-chart">
           <div className="card-header">
-            <span className="card-title">Power Generation History (24h)</span>
+            <span className="card-title">Power Generation History (24h)<HelpIcon text="24시간 동안의 태양광 발전량 변화 추이" /></span>
             <Link to="/solar" style={{ color: 'var(--primary-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
               Details <MdArrowForward size={14} />
             </Link>
@@ -253,19 +253,19 @@ const Dashboard = () => {
 
         {/* Additional Charts */}
         <div className="glass-card widget-small-chart">
-          <div className="card-header"><span className="card-title">Monthly Energy</span></div>
+          <div className="card-header"><span className="card-title">Monthly Energy<HelpIcon text="월별 총 발전량 비교" /></span></div>
           <div style={{ height: '100%', width: '100%' }}>
             <Bar data={monthlyData} options={commonChartOptions} />
           </div>
         </div>
         <div className="glass-card widget-small-chart">
-          <div className="card-header"><span className="card-title">Yearly Energy</span></div>
+          <div className="card-header"><span className="card-title">Yearly Energy<HelpIcon text="연도별 총 발전량 추이" /></span></div>
           <div style={{ height: '100%', width: '100%' }}>
             <Line data={yearlyData} options={commonChartOptions} />
           </div>
         </div>
         <div className="glass-card widget-small-chart">
-          <div className="card-header"><span className="card-title">Total Cumulative</span></div>
+          <div className="card-header"><span className="card-title">Total Cumulative<HelpIcon text="시스템 가동 후 누적 총 발전량" /></span></div>
           <div style={{ height: '100%', width: '100%' }}>
             <Line data={cumulativeData} options={commonChartOptions} />
           </div>
