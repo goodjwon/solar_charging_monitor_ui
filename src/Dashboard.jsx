@@ -2,10 +2,20 @@ import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
-import { MdSolarPower, MdAutorenew, MdBatteryChargingFull, MdLightbulb, MdFullscreen, MdSettings, MdArrowForward } from 'react-icons/md';
+import { MdSolarPower, MdAutorenew, MdBatteryChargingFull, MdLightbulb, MdFullscreen, MdSettings, MdArrowForward, MdHelpOutline } from 'react-icons/md';
 import './Dashboard.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler);
+
+// Help Icon Component with Tooltip
+const HelpIcon = ({ text, multiline = false }) => (
+  <div className="tooltip-container">
+    <div className="help-icon">
+      <MdHelpOutline size={12} />
+    </div>
+    <span className={`tooltip-text ${multiline ? 'multiline' : ''}`}>{text}</span>
+  </div>
+);
 
 const Dashboard = () => {
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
@@ -151,7 +161,9 @@ const Dashboard = () => {
 
         {/* Key Metrics */}
         <div className="glass-card widget-metric">
-          <div className="card-header"><span className="card-title">Solar Power</span></div>
+          <div className="card-header">
+            <span className="card-title">Solar Power<HelpIcon text="태양광 패널에서 현재 생산되는 전력량입니다. 전압과 전류를 곱한 값입니다." multiline /></span>
+          </div>
           <div className="metric-value" style={{ color: 'var(--primary-color)' }}>
             1.2<span className="metric-unit"> W</span>
           </div>
@@ -160,7 +172,7 @@ const Dashboard = () => {
 
         <div className="glass-card widget-metric">
           <div className="card-header">
-            <span className="card-title">Battery Status</span>
+            <span className="card-title">Battery Status<HelpIcon text="배터리의 현재 충전 상태(SOC)와 예상 사용 가능 시간입니다." multiline /></span>
             <Link to="/battery" style={{ color: 'var(--primary-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
               Details <MdArrowForward size={14} />
             </Link>
@@ -175,7 +187,9 @@ const Dashboard = () => {
         </div>
 
         <div className="glass-card widget-metric">
-          <div className="card-header"><span className="card-title">Load Power</span></div>
+          <div className="card-header">
+            <span className="card-title">Load Power<HelpIcon text="현재 연결된 부하(전등, 기기 등)가 소비하는 전력량입니다." multiline /></span>
+          </div>
           <div className="metric-value" style={{ color: 'var(--accent-color)' }}>
             0.3<span className="metric-unit"> W</span>
           </div>
@@ -183,7 +197,9 @@ const Dashboard = () => {
         </div>
 
         <div className="glass-card widget-metric">
-          <div className="card-header"><span className="card-title">Efficiency</span></div>
+          <div className="card-header">
+            <span className="card-title">Efficiency<HelpIcon text="태양광 시스템의 전체 효율입니다. 발전량 대비 실제 사용 가능한 에너지 비율입니다." multiline /></span>
+          </div>
           <div className="metric-value" style={{ color: '#2196F3' }}>
             92<span className="metric-unit"> %</span>
           </div>
@@ -206,7 +222,7 @@ const Dashboard = () => {
         {/* Eco Impact */}
         <div className="glass-card widget-eco">
           <div className="card-header">
-            <span className="card-title">Eco Impact</span>
+            <span className="card-title">Eco Impact<HelpIcon text="태양광 발전으로 절감한 CO2 배출량, 절약 금액, 에너지 자립률 등 환경 효과입니다." multiline /></span>
             <Link to="/eco" style={{ color: 'var(--primary-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
               Details <MdArrowForward size={14} />
             </Link>
@@ -258,7 +274,7 @@ const Dashboard = () => {
         {/* Logs */}
         <div className="glass-card widget-logs">
           <div className="card-header">
-            <span className="card-title">System Logs</span>
+            <span className="card-title">System Logs<HelpIcon text="시스템의 주요 이벤트와 상태 변화를 시간순으로 기록한 로그입니다." multiline /></span>
             <Link to="/logs" style={{ color: 'var(--primary-color)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
               View All <MdArrowForward size={14} />
             </Link>
