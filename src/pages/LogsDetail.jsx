@@ -141,6 +141,13 @@ const LogsDetail = () => {
           <div className="metric-sub">Critical issues</div>
         </div>
       </div>
+
+      <footer className="dashboard-footer">
+        <div className="footer-content">
+          <p>© 2025 Solar Monitor. Licensed by <a href="https://electrowave.kr/" target="_blank" rel="noopener noreferrer">electrowave.kr</a></p>
+          <p>Developed by <strong>goodjwon</strong></p>
+        </div>
+      </footer>
     </div>
   );
 };

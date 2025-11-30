@@ -107,6 +107,7 @@ header {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
+    overflow: visible;
 }
 
 .card-header {
@@ -308,7 +309,6 @@ header {
 .widget-logs {
     grid-column: span 12;
     height: 250px;
-    overflow-y: auto;
 }
 
 .log-item {
@@ -443,4 +443,39 @@ header {
     white-space: pre-wrap;
     text-align: left;
     word-break: keep-all;
+}
+
+/* Footer Styles */
+.dashboard-footer {
+    background-color: #000000;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    margin-top: 40px;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.footer-content p {
+    margin: 5px 0;
+}
+
+.footer-content a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-content a:hover {
+    color: #00e5ff;
+    text-decoration: underline;
+}
+
+.footer-content strong {
+    color: var(--text-primary);
 }
