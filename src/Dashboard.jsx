@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
 import { MdSolarPower, MdAutorenew, MdBatteryChargingFull, MdLightbulb, MdFullscreen, MdSettings, MdArrowForward, MdHelpOutline } from 'react-icons/md';
+import Footer from './components/Footer';
+import { getDashboardData, getChartOptions } from './data/mockData';
 import './Dashboard.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler);
@@ -20,12 +22,27 @@ const HelpIcon = ({ text, multiline = false }) => (
 const Dashboard = () => {
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [dashboardData, setDashboardData] = useState(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString());
     }, 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    // Load dashboard data
+    const data = getDashboardData();
+    setDashboardData(data);
+
+    // Refresh data every 5 seconds
+    const dataRefreshTimer = setInterval(() => {
+      const refreshedData = getDashboardData();
+      setDashboardData(refreshedData);
+    }, 5000);
+
+    return () => clearInterval(dataRefreshTimer);
   }, []);
 
   const toggleFullscreen = () => {
@@ -50,11 +67,15 @@ const Dashboard = () => {
     }
   };
 
+  if (!dashboardData) {
+    return <div style={{ color: 'white', padding: '20px' }}>Loading...</div>;
+  }
+
   const historyData = {
-    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+    labels: dashboardData.history.labels,
     datasets: [{
       label: 'Generation (W)',
-      data: [0, 0.5, 1.2, 2.5, 1.8, 0.2],
+      data: dashboardData.history.solarPower,
       borderColor: '#00bcd4',
       backgroundColor: 'rgba(0, 188, 212, 0.3)',
       fill: true,
@@ -64,18 +85,18 @@ const Dashboard = () => {
   };
 
   const monthlyData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: dashboardData.monthly.labels,
     datasets: [{
-      data: [120, 150, 180, 220, 250, 280],
+      data: dashboardData.monthly.generation,
       backgroundColor: '#00bcd4',
       borderRadius: 4
     }]
   };
 
   const yearlyData = {
-    labels: ['2021', '2022', '2023', '2024', '2025'],
+    labels: dashboardData.yearly.labels,
     datasets: [{
-      data: [3200, 3500, 3800, 4100, 4000],
+      data: dashboardData.yearly.generation,
       borderColor: '#ff4081',
       backgroundColor: 'rgba(255, 64, 129, 0.1)',
       fill: true,
@@ -84,9 +105,9 @@ const Dashboard = () => {
   };
 
   const cumulativeData = {
-    labels: ['2021', '2022', '2023', '2024', '2025'],
+    labels: dashboardData.yearly.labels,
     datasets: [{
-      data: [3200, 6700, 10500, 14600, 18600],
+      data: dashboardData.yearly.cumulative,
       borderColor: '#4caf50',
       backgroundColor: 'rgba(76, 175, 80, 0.1)',
       fill: true,
@@ -127,7 +148,7 @@ const Dashboard = () => {
               <div className="node-icon solar"><MdSolarPower /></div>
               <div style={{ position: 'absolute', top: '70px', textAlign: 'center', width: '150px' }}>
                 <div style={{ fontWeight: 'bold', marginBottom: '4px', color: '#f1c40f' }}>Generation</div>
-                <div style={{ fontSize: '0.9rem', opacity: 0.8, color: 'var(--text-secondary)' }}>1.2 W</div>
+                <div style={{ fontSize: '0.9rem', opacity: 0.8, color: 'var(--text-secondary)' }}>{dashboardData.current.solarPower.toFixed(1)} W</div>
               </div>
             </div>
 
@@ -140,7 +161,7 @@ const Dashboard = () => {
               <div className="node-icon battery"><MdBatteryChargingFull /></div>
               <div style={{ position: 'absolute', top: '70px', textAlign: 'center', width: '150px' }}>
                 <div style={{ fontWeight: 'bold', marginBottom: '4px', color: '#2ecc71' }}>Storage</div>
-                <div style={{ fontSize: '0.9rem', opacity: 0.8, color: 'var(--text-secondary)' }}>75 %</div>
+                <div style={{ fontSize: '0.9rem', opacity: 0.8, color: 'var(--text-secondary)' }}>{dashboardData.current.batteryLevel.toFixed(0)} %</div>
               </div>
             </div>
 
@@ -153,7 +174,7 @@ const Dashboard = () => {
               <div className="node-icon load"><MdLightbulb /></div>
               <div style={{ position: 'absolute', top: '70px', textAlign: 'center', width: '150px' }}>
                 <div style={{ fontWeight: 'bold', marginBottom: '4px', color: '#e74c3c' }}>Consumption</div>
-                <div style={{ fontSize: '0.9rem', opacity: 0.8, color: 'var(--text-secondary)' }}>0.3 W</div>
+                <div style={{ fontSize: '0.9rem', opacity: 0.8, color: 'var(--text-secondary)' }}>{dashboardData.current.consumption.toFixed(1)} W</div>
               </div>
             </div>
           </div>
@@ -299,12 +320,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <footer className="dashboard-footer">
-        <div className="footer-content">
-          <p>© 2025 Solar Monitor. Licensed by <a href="https://electrowave.kr/" target="_blank" rel="noopener noreferrer">electrowave.kr</a></p>
-          <p>Developed by <strong>goodjwon</strong></p>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 };

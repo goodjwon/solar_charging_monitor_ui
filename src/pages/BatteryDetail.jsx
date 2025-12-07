@@ -1,16 +1,36 @@
+import { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { MdArrowBack, MdBatteryChargingFull } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
+import { getBatteryDetailData, getChartOptions } from '../data/mockData';
 import '../Dashboard.css';
 
 const BatteryDetail = () => {
   const navigate = useNavigate();
+  const [batteryData, setBatteryData] = useState(null);
+
+  useEffect(() => {
+    const data = getBatteryDetailData();
+    setBatteryData(data);
+
+    const refreshTimer = setInterval(() => {
+      const refreshedData = getBatteryDetailData();
+      setBatteryData(refreshedData);
+    }, 5000);
+
+    return () => clearInterval(refreshTimer);
+  }, []);
+
+  if (!batteryData) {
+    return <div style={{ color: 'white', padding: '20px' }}>Loading...</div>;
+  }
 
   const voltageData = {
-    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+    labels: batteryData.hourly.labels,
     datasets: [{
       label: 'Voltage (V)',
-      data: [12.2, 12.4, 12.8, 13.2, 13.0, 12.6, 12.4],
+      data: batteryData.hourly.voltage,
       borderColor: '#4caf50',
       backgroundColor: 'rgba(76, 175, 80, 0.1)',
       fill: true,
@@ -19,10 +39,10 @@ const BatteryDetail = () => {
   };
 
   const currentData = {
-    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+    labels: batteryData.hourly.labels,
     datasets: [{
       label: 'Current (A)',
-      data: [0.1, 0.5, 1.2, 1.8, 1.5, 0.8, 0.2],
+      data: batteryData.hourly.current,
       borderColor: '#00bcd4',
       backgroundColor: 'rgba(0, 188, 212, 0.1)',
       fill: true,
@@ -31,10 +51,10 @@ const BatteryDetail = () => {
   };
 
   const temperatureData = {
-    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+    labels: batteryData.hourly.labels,
     datasets: [{
       label: 'Temperature (°C)',
-      data: [22, 24, 28, 32, 30, 26, 23],
+      data: batteryData.hourly.temperature,
       borderColor: '#ff4081',
       backgroundColor: 'rgba(255, 64, 129, 0.1)',
       fill: true,
@@ -42,15 +62,7 @@ const BatteryDetail = () => {
     }]
   };
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: true, labels: { color: '#b0bec5' } } },
-    scales: {
-      x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#b0bec5' } },
-      y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#b0bec5' } }
-    }
-  };
+  const chartOptions = getChartOptions();
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-color)' }}>
@@ -157,12 +169,7 @@ const BatteryDetail = () => {
         </div>
       </div>
 
-      <footer className="dashboard-footer">
-        <div className="footer-content">
-          <p>© 2025 Solar Monitor. Licensed by <a href="https://electrowave.kr/" target="_blank" rel="noopener noreferrer">electrowave.kr</a></p>
-          <p>Developed by <strong>goodjwon</strong></p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -1,26 +1,46 @@
+import { useState, useEffect } from 'react';
 import { Line, Bar } from 'react-chartjs-2';
 import { MdArrowBack, MdEco } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
+import { getEcoDetailData, getChartOptions } from '../data/mockData';
 import '../Dashboard.css';
 
 const EcoDetail = () => {
   const navigate = useNavigate();
+  const [ecoData, setEcoData] = useState(null);
+
+  useEffect(() => {
+    const data = getEcoDetailData();
+    setEcoData(data);
+
+    const refreshTimer = setInterval(() => {
+      const refreshedData = getEcoDetailData();
+      setEcoData(refreshedData);
+    }, 5000);
+
+    return () => clearInterval(refreshTimer);
+  }, []);
+
+  if (!ecoData) {
+    return <div style={{ color: 'white', padding: '20px' }}>Loading...</div>;
+  }
 
   const co2Data = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: ecoData.monthly.labels,
     datasets: [{
       label: 'CO2 Saved (kg)',
-      data: [12, 18, 25, 32, 38, 42],
+      data: ecoData.monthly.co2,
       backgroundColor: '#4caf50',
       borderRadius: 4
     }]
   };
 
   const savingsData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: ecoData.monthly.labels,
     datasets: [{
       label: 'Money Saved (₩)',
-      data: [1200, 1800, 2500, 3200, 3800, 4200],
+      data: ecoData.monthly.money,
       borderColor: '#ff9800',
       backgroundColor: 'rgba(255, 152, 0, 0.1)',
       fill: true,
@@ -29,10 +49,10 @@ const EcoDetail = () => {
   };
 
   const selfSufficiencyData = {
-    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+    labels: ecoData.weekly.labels,
     datasets: [{
       label: 'Self-Sufficiency (%)',
-      data: [75, 82, 88, 85],
+      data: ecoData.weekly.selfSufficiency,
       borderColor: '#00bcd4',
       backgroundColor: 'rgba(0, 188, 212, 0.1)',
       fill: true,
@@ -40,15 +60,7 @@ const EcoDetail = () => {
     }]
   };
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: true, labels: { color: '#b0bec5' } } },
-    scales: {
-      x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#b0bec5' } },
-      y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#b0bec5' } }
-    }
-  };
+  const chartOptions = getChartOptions();
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-color)' }}>
@@ -159,12 +171,7 @@ const EcoDetail = () => {
         </div>
       </div>
 
-      <footer className="dashboard-footer">
-        <div className="footer-content">
-          <p>© 2025 Solar Monitor. Licensed by <a href="https://electrowave.kr/" target="_blank" rel="noopener noreferrer">electrowave.kr</a></p>
-          <p>Developed by <strong>goodjwon</strong></p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

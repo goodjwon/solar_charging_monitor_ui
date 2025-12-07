@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MdArrowBack, MdFilterList, MdSearch } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 import '../Dashboard.css';
 
 const LogsDetail = () => {
@@ -142,12 +143,7 @@ const LogsDetail = () => {
         </div>
       </div>
 
-      <footer className="dashboard-footer">
-        <div className="footer-content">
-          <p>© 2025 Solar Monitor. Licensed by <a href="https://electrowave.kr/" target="_blank" rel="noopener noreferrer">electrowave.kr</a></p>
-          <p>Developed by <strong>goodjwon</strong></p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

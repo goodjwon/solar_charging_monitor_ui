@@ -1,16 +1,36 @@
+import { useState, useEffect } from 'react';
 import { Line, Bar } from 'react-chartjs-2';
 import { MdArrowBack, MdWbSunny } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
+import { getSolarDetailData, getChartOptions } from '../data/mockData';
 import '../Dashboard.css';
 
 const SolarDetail = () => {
   const navigate = useNavigate();
+  const [solarData, setSolarData] = useState(null);
+
+  useEffect(() => {
+    const data = getSolarDetailData();
+    setSolarData(data);
+
+    const refreshTimer = setInterval(() => {
+      const refreshedData = getSolarDetailData();
+      setSolarData(refreshedData);
+    }, 5000);
+
+    return () => clearInterval(refreshTimer);
+  }, []);
+
+  if (!solarData) {
+    return <div style={{ color: 'white', padding: '20px' }}>Loading...</div>;
+  }
 
   const hourlyData = {
-    labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '24:00'],
+    labels: solarData.hourly.labels,
     datasets: [{
       label: 'Power Generation (W)',
-      data: [0, 0, 0.2, 0.8, 1.5, 1.2, 0.5, 0, 0],
+      data: solarData.hourly.power,
       borderColor: '#f1c40f',
       backgroundColor: 'rgba(241, 196, 15, 0.1)',
       fill: true,
@@ -19,10 +39,10 @@ const SolarDetail = () => {
   };
 
   const illuminanceData = {
-    labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '24:00'],
+    labels: solarData.hourly.labels,
     datasets: [{
       label: 'Illuminance (lux)',
-      data: [0, 0, 5000, 35000, 54715, 42000, 15000, 0, 0],
+      data: solarData.hourly.illuminance,
       borderColor: '#ff9800',
       backgroundColor: 'rgba(255, 152, 0, 0.1)',
       fill: true,
@@ -31,10 +51,10 @@ const SolarDetail = () => {
   };
 
   const temperatureData = {
-    labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '24:00'],
+    labels: solarData.hourly.labels,
     datasets: [{
       label: 'Panel Temperature (°C)',
-      data: [18, 18, 22, 30, 38, 35, 28, 20, 18],
+      data: solarData.hourly.temperature,
       borderColor: '#e74c3c',
       backgroundColor: 'rgba(231, 76, 60, 0.1)',
       fill: true,
@@ -43,20 +63,20 @@ const SolarDetail = () => {
   };
 
   const weeklyData = {
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    labels: solarData.weekly.labels,
     datasets: [{
-      label: 'Daily Generation (Wh)',
-      data: [15, 18, 12, 20, 22, 19, 16],
+      label: 'Daily Generation (kWh)',
+      data: solarData.weekly.generation,
       backgroundColor: '#f1c40f',
       borderRadius: 4
     }]
   };
 
   const efficiencyData = {
-    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+    labels: solarData.monthly.labels,
     datasets: [{
       label: 'Efficiency (%)',
-      data: [88, 92, 90, 93],
+      data: solarData.monthly.efficiency,
       borderColor: '#2ecc71',
       backgroundColor: 'rgba(46, 204, 113, 0.1)',
       fill: true,
@@ -64,15 +84,7 @@ const SolarDetail = () => {
     }]
   };
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: true, labels: { color: '#b0bec5' } } },
-    scales: {
-      x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#b0bec5' } },
-      y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#b0bec5' } }
-    }
-  };
+  const chartOptions = getChartOptions();
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-color)' }}>
@@ -225,12 +237,7 @@ const SolarDetail = () => {
         </div>
       </div>
 
-      <footer className="dashboard-footer">
-        <div className="footer-content">
-          <p>© 2025 Solar Monitor. Licensed by <a href="https://electrowave.kr/" target="_blank" rel="noopener noreferrer">electrowave.kr</a></p>
-          <p>Developed by <strong>goodjwon</strong></p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
